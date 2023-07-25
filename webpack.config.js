@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const path = require("path");
 
 module.exports = {
@@ -8,6 +10,7 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "app.js",
   },
+  devtool: "cheap-module-source-map",
   resolve: { extensions: [".js", ".jsx"] },
   devServer: {
     static: {
@@ -36,5 +39,11 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({ template: "./public/index.html" }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: "static",
+      openAnalyzer: false,
+      generateStatsFile: true,
+      statsFilename: "bundle-report.json",
+    }),
   ],
 };
