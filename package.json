@@ -7,6 +7,7 @@
     "dev": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
     "analyze": "webpack-bundle-analyzer ./dist/bundle-report.json --default-sizes gzip",
+    "lint": "eslint './src/**/*.{ts,tsx,js,jsx}'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dongtimes2",
@@ -31,6 +32,8 @@
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.0",
