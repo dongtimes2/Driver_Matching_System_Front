@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { styled } from "styled-components";
-
-type ButtonModeType = "light" | "dark";
+import { ButtonModeType } from "../../types/button";
 
 interface Props {
   children: ReactNode;
@@ -16,7 +15,7 @@ const Button = styled.button<{ $mode: ButtonModeType }>`
   border: none;
   border-radius: 2rem;
   font-size: ${({ theme }) => theme.fontSize.subTitle};
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   background: ${({ theme, $mode }) =>
     $mode === "light" ? theme.colors.pointGradient : theme.colors.grayGradient};
   color: ${({ theme }) => theme.colors.white};
