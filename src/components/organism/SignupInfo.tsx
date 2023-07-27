@@ -2,11 +2,10 @@ import { styled } from "styled-components";
 import { useState } from "react";
 import Label from "../atoms/Label";
 import ToggleSelector from "../molecule/ToggleSelector";
-import MainButton from "../atoms/MainButton";
 import { USER_TYPE_LIST } from "../../constants/user";
+import BottomFixedButton from "../molecule/BottomFixedButton";
 
 const Wrapper = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,12 +18,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .bottomArea {
-    position: absolute;
-    bottom: 1.75rem;
-    width: 100%;
   }
 `;
 
@@ -46,11 +39,11 @@ function SignupInfo() {
         selectedItem={userType}
         setSelectedItem={setUserType}
       />
-      <div className="bottomArea">
-        <MainButton mode={userType ? "light" : "dark"} onClick={() => null}>
-          가입하기
-        </MainButton>
-      </div>
+      <BottomFixedButton
+        buttonText="가입하기"
+        mode={userType ? "light" : "dark"}
+        onClick={() => null}
+      />
     </Wrapper>
   );
 }
