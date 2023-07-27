@@ -1,12 +1,15 @@
+require("dotenv").config();
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const DotenvWebpack = require("dotenv-webpack");
 const path = require("path");
 
 module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
+    publicPath: "/",
     filename: "app.js",
   },
   devtool: "cheap-module-source-map",
@@ -17,6 +20,7 @@ module.exports = {
     },
     port: 3000,
     compress: true,
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -43,9 +47,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new DotenvWebpack(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      kakaoAPIUrl: `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.JAVASCRIPT_KEY}`,
       minify:
         process.env.NODE_ENV === "production"
           ? {

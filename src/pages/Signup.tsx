@@ -1,14 +1,14 @@
 import Header from "../components/molecule/Header";
-import MainTitle from "../components/organism/MainTitle";
+import SignupInfo from "../components/organism/SignupInfo";
 import Layout from "../styles/Layout";
 
-function Main() {
+function Signup() {
   return (
     <Layout>
       <Header showRightArea={false} />
-      <MainTitle />
+      <SignupInfo />
     </Layout>
   );
 }
 
-export default Main;
+export default Signup;

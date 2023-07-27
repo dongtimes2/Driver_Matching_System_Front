@@ -19,8 +19,10 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["react", "@typescript-eslint/eslint-plugin"],
+  "ignorePatterns": ["webpack.config.js"],
   "rules": {
     "@typescript-eslint/no-var-requires": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off"
   }
 }

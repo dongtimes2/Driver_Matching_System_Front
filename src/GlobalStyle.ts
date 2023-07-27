@@ -11,6 +11,9 @@ const GlobalStyle = createGlobalStyle`
 * {
   margin: 0;
 }
+html, body, #root {
+  height: 100%;
+}
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
