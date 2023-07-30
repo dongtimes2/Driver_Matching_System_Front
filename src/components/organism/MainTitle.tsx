@@ -1,6 +1,9 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Label from "../atoms/Label";
 import BottomFixedButton from "../molecule/BottomFixedButton";
+import { handleGoogleLogin } from "../../api/firebase/auth";
+import { getAccount } from "../../api/accounts";
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,6 +15,21 @@ const Wrapper = styled.div`
 `;
 
 function MainTitle() {
+  const navigate = useNavigate();
+
+  const handleSigninButtonClick = async () => {
+    try {
+      await handleGoogleLogin();
+      const { type, name } = await getAccount();
+
+      if (!type) {
+        navigate("/signup", { state: { name } });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Wrapper>
       <Label size="title" weight="bold">
@@ -20,7 +38,7 @@ function MainTitle() {
       <BottomFixedButton
         buttonText="로그인 하기"
         mode="light"
-        onClick={() => null}
+        onClick={handleSigninButtonClick}
       />
     </Wrapper>
   );
