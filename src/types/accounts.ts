@@ -1,6 +1,6 @@
 export type UserType = "driver" | "passenger";
 
-export interface IUserTypeList {
+export interface IUser {
   type: UserType;
   name: string;
 }

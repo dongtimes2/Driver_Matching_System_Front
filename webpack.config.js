@@ -20,6 +20,7 @@ module.exports = {
     port: 3000,
     compress: true,
     historyApiFallback: true,
+    allowedHosts: "all",
   },
   module: {
     rules: [
