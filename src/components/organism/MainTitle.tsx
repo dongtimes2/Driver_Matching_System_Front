@@ -22,7 +22,9 @@ function MainTitle() {
       await handleGoogleLogin();
       const { type, name } = await getAccount();
 
-      if (!type) {
+      if (type) {
+        navigate(`/map/${type}`, { state: { name } });
+      } else {
         navigate("/signup", { state: { name } });
       }
     } catch (error) {
