@@ -4,6 +4,9 @@ import { DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from "../../constants/map";
 import { styled } from "styled-components";
 import { ICall } from "../../types/api";
 import { ICoordinate } from "../../types/map";
+import driverIcon from "../../assets/img/driver.png";
+import passengerIcon from "../../assets/img/pointer2.png";
+import { infowindowText } from "../../utils/infowindowText";
 
 declare global {
   interface Window {
@@ -31,6 +34,7 @@ function DriverMap({ callList, setSelectedCall, onUpdateCoordinate }: Props) {
   const [map, setMap] = useState<any | null>(null);
   const [, setMarkerList] = useState<any>([]);
   const mapScript = useRef<HTMLScriptElement | null>(null);
+  const driverMarker = useRef<any | null>(null);
 
   useEffect(() => {
     mapScript.current = document.createElement("script");
@@ -48,8 +52,15 @@ function DriverMap({ callList, setSelectedCall, onUpdateCoordinate }: Props) {
         const onSuccess = (position: GeolocationPosition) => {
           latitude = position.coords.latitude;
           longitude = position.coords.longitude;
+          console.log(latitude, longitude);
 
           if (isMapCreated) {
+            if (driverMarker.current) {
+              driverMarker.current.setPosition(
+                new window.kakao.maps.LatLng(latitude, longitude)
+              );
+            }
+
             onUpdateCoordinate({ latitude, longitude });
           } else {
             createMap();
@@ -57,6 +68,7 @@ function DriverMap({ callList, setSelectedCall, onUpdateCoordinate }: Props) {
         };
 
         const onError = () => {
+          console.log("error");
           !isMapCreated && createMap();
         };
 
@@ -86,8 +98,36 @@ function DriverMap({ callList, setSelectedCall, onUpdateCoordinate }: Props) {
     mapScript.current.addEventListener("load", onLoadKakaoMap);
   }, []);
 
+  // driver 마커 구현부
   useEffect(() => {
     if (!map) return;
+
+    const imageSize = new window.kakao.maps.Size(48, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(24, 60) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      driverIcon,
+      imageSize,
+      imageOption
+    );
+
+    driverMarker.current = new window.kakao.maps.Marker({
+      position: map.getCenter(),
+      map,
+      image: markerImage,
+    });
+  }, [map]);
+
+  // passenger marker 로직 구현부
+  useEffect(() => {
+    if (!map) return;
+
+    const imageSize = new window.kakao.maps.Size(32, 48);
+    const imageOption = { offset: new window.kakao.maps.Point(16, 45) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      passengerIcon,
+      imageSize,
+      imageOption
+    );
 
     setMarkerList((markerList: any) => {
       markerList.forEach((markerData: any) => {
@@ -103,10 +143,11 @@ function DriverMap({ callList, setSelectedCall, onUpdateCoordinate }: Props) {
         const marker = new window.kakao.maps.Marker({
           position,
           map,
+          image: markerImage,
         });
         const infowindow = new window.kakao.maps.InfoWindow({
           position,
-          content: call.passengerName,
+          content: infowindowText(call.passengerName),
         });
         infowindow.open(map, marker);
 
