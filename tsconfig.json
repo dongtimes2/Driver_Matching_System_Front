@@ -8,5 +8,5 @@
     "types": ["react", "styled-components"]
   },
   "exclude": ["node_modules/*"],
-  "include": ["./src/", "src/components"]
+  "include": ["./src/", "src/components", "src/custom.d.ts"]
 }
