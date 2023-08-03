@@ -45,6 +45,7 @@ function PassengerMap({
   const mapScript = useRef<HTMLScriptElement | null>(null);
   const userMarker = useRef<any | null>(null);
   const driverMarker = useRef<any | null>(null);
+  const bounds = useRef<any | null>(null);
 
   useEffect(() => {
     mapScript.current = document.createElement("script");
@@ -124,22 +125,16 @@ function PassengerMap({
       });
     }
 
-    // let bounds = new window.kakao.maps.LatLngBounds();
-
     const handleMapClick = (mouseEvent: IMouseEvent) => {
       const latitude = mouseEvent.latLng.Ma;
       const longitude = mouseEvent.latLng.La;
       const position = new window.kakao.maps.LatLng(latitude, longitude);
 
-      // const bounds = new window.kakao.maps.LatLngBounds();
-
       setPassengerCoordinate({
         latitude,
         longitude,
       });
-
       userMarker.current.setPosition(position);
-      // map.setBounds(bounds);
     };
 
     if (callStatus === "notRequested") {
@@ -150,8 +145,9 @@ function PassengerMap({
       );
 
       userMarker.current.setImage(markerImage);
+      bounds.current = null;
       window.kakao.maps.event.addListener(map, "click", handleMapClick);
-    } else {
+    } else if (callStatus === "requesting") {
       const markerImage = new window.kakao.maps.MarkerImage(
         passengerIcon2,
         imageSize,
@@ -159,8 +155,10 @@ function PassengerMap({
       );
 
       userMarker.current.setImage(markerImage);
-      // bounds.extend(position);
-      // map.setBounds(bounds);
+    } else {
+      const position = userMarker.current.getPosition();
+      bounds.current = new window.kakao.maps.LatLngBounds();
+      bounds.current.extend(position);
     }
 
     return () => {
@@ -183,7 +181,10 @@ function PassengerMap({
     );
 
     if (latitude === -1 || longitude === -1) {
-      if (driverMarker.current) driverMarker.current.setMap(null);
+      if (driverMarker.current) {
+        driverMarker.current.setMap(null);
+        driverMarker.current = null;
+      }
     } else {
       if (driverMarker.current) {
         driverMarker.current.setPosition(position);
@@ -194,6 +195,8 @@ function PassengerMap({
           map,
           image: markerImage,
         });
+        bounds.current.extend(position);
+        map.setBounds(bounds.current);
       }
     }
   }, [driverCoordinate, map]);
