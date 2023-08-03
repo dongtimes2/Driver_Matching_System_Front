@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from "../../constants/map";
 import { ICoordinate, PassengerCallStatusType } from "../../types/map";
+import pointer1 from "../../assets/img/pointer1.png";
+import pointer2 from "../../assets/img/pointer2.png";
 
 declare global {
   interface Window {
@@ -101,14 +103,23 @@ function PassengerMap({
    * 지도의 중심에 마커가 생성되도록 하였음.
    */
 
+  // passenger 마커 구현부
   useEffect(() => {
     if (!map) return;
+    const imageSize = new window.kakao.maps.Size(40, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(20, 60) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      pointer1,
+      imageSize,
+      imageOption
+    );
 
     // 유저 마커가 없을 경우 지도 중심에서 최초 생성
     if (!userMarker.current) {
       userMarker.current = new window.kakao.maps.Marker({
         position: map.getCenter(),
         map,
+        image: markerImage,
       });
     }
 
@@ -118,6 +129,7 @@ function PassengerMap({
       const latitude = mouseEvent.latLng.Ma;
       const longitude = mouseEvent.latLng.La;
       const position = new window.kakao.maps.LatLng(latitude, longitude);
+
       // const bounds = new window.kakao.maps.LatLngBounds();
 
       setPassengerCoordinate({
@@ -130,8 +142,22 @@ function PassengerMap({
     };
 
     if (callStatus === "notRequested") {
+      const markerImage = new window.kakao.maps.MarkerImage(
+        pointer1,
+        imageSize,
+        imageOption
+      );
+
+      userMarker.current.setImage(markerImage);
       window.kakao.maps.event.addListener(map, "click", handleMapClick);
     } else {
+      const markerImage = new window.kakao.maps.MarkerImage(
+        pointer2,
+        imageSize,
+        imageOption
+      );
+
+      userMarker.current.setImage(markerImage);
       // bounds.extend(position);
       // map.setBounds(bounds);
     }
