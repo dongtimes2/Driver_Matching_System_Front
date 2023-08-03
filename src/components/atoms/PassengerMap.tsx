@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from "../../constants/map";
 import { ICoordinate, PassengerCallStatusType } from "../../types/map";
-import pointer1 from "../../assets/img/pointer1.png";
-import pointer2 from "../../assets/img/pointer2.png";
+import passengerIcon1 from "../../assets/img/pointer1.png";
+import passengerIcon2 from "../../assets/img/pointer2.png";
+import driverIcon from "../../assets/img/driver.png";
 
 declare global {
   interface Window {
@@ -106,10 +107,10 @@ function PassengerMap({
   // passenger 마커 구현부
   useEffect(() => {
     if (!map) return;
-    const imageSize = new window.kakao.maps.Size(40, 64);
-    const imageOption = { offset: new window.kakao.maps.Point(20, 60) };
+    const imageSize = new window.kakao.maps.Size(48, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(24, 60) };
     const markerImage = new window.kakao.maps.MarkerImage(
-      pointer1,
+      passengerIcon1,
       imageSize,
       imageOption
     );
@@ -143,7 +144,7 @@ function PassengerMap({
 
     if (callStatus === "notRequested") {
       const markerImage = new window.kakao.maps.MarkerImage(
-        pointer1,
+        passengerIcon1,
         imageSize,
         imageOption
       );
@@ -152,7 +153,7 @@ function PassengerMap({
       window.kakao.maps.event.addListener(map, "click", handleMapClick);
     } else {
       const markerImage = new window.kakao.maps.MarkerImage(
-        pointer2,
+        passengerIcon2,
         imageSize,
         imageOption
       );
@@ -173,6 +174,13 @@ function PassengerMap({
     const latitude = driverCoordinate.latitude;
     const longitude = driverCoordinate.longitude;
     const position = new window.kakao.maps.LatLng(latitude, longitude);
+    const imageSize = new window.kakao.maps.Size(48, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(24, 60) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      driverIcon,
+      imageSize,
+      imageOption
+    );
 
     if (latitude === -1 || longitude === -1) {
       if (driverMarker.current) driverMarker.current.setMap(null);
@@ -184,6 +192,7 @@ function PassengerMap({
         driverMarker.current = new window.kakao.maps.Marker({
           position,
           map,
+          image: markerImage,
         });
       }
     }
