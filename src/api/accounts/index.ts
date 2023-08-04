@@ -1,3 +1,4 @@
+import { UserType } from "../../types/accounts";
 import { IGetAccount, IPatchAccount } from "../../types/api";
 import { request } from "../config/axios";
 
@@ -10,8 +11,8 @@ export const getAccount = async () => {
   return res.data;
 };
 
-export const patchAccount = async (payload: IPatchAccount) => {
-  const res = await request({
+export const patchAccount = async (payload: { type: UserType }) => {
+  const res = await request<IPatchAccount>({
     method: "patch",
     url: "/accounts",
     data: payload,
