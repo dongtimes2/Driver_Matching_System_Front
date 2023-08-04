@@ -1,10 +1,15 @@
 import { styled } from "styled-components";
 import ToggleButton from "../atoms/ToggleButton";
 
-interface Props {
-  data: { type: string; name: string }[];
-  selectedItem: string | null;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string | null>>;
+interface Item {
+  type: string;
+  name: string;
+}
+
+interface Props<T> {
+  data: T[];
+  selectedItem: T | null;
+  setSelectedItem: React.Dispatch<React.SetStateAction<T | null>>;
 }
 
 const Wrapper = styled.div`
@@ -15,9 +20,13 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-function ToggleSelector({ data, selectedItem, setSelectedItem }: Props) {
-  const handleButtonClick = (type: string) => {
-    setSelectedItem(type);
+function ToggleSelector<T extends Item>({
+  data,
+  selectedItem,
+  setSelectedItem,
+}: Props<T>) {
+  const handleButtonClick = (item: T) => {
+    setSelectedItem(item);
   };
 
   return (
@@ -25,8 +34,8 @@ function ToggleSelector({ data, selectedItem, setSelectedItem }: Props) {
       {data.map((item) => (
         <ToggleButton
           key={item.type}
-          onClick={() => handleButtonClick(item.type)}
-          mode={selectedItem === item.type ? "light" : "dark"}
+          onClick={() => handleButtonClick(item)}
+          mode={selectedItem?.type === item.type ? "light" : "dark"}
         >
           {item.name}
         </ToggleButton>
