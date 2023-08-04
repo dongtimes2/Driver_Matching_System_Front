@@ -53,9 +53,11 @@ function DriverService() {
     }
   };
 
+  // 선택한 요청을 다른 driver가 먼저 매칭시켰을 경우,
+  // 이를 실시간으로 반영하고 해당 요청을 수락하지 않도록 막는 구현부
   useEffect(() => {
     if (!selectedCall) return;
-    if (!callList.includes(selectedCall)) {
+    if (!callList.find((call) => call.uuid === selectedCall.uuid)) {
       setButtonStatus("notSelected");
       setSelectedCall(null);
     }
@@ -92,15 +94,8 @@ function DriverService() {
     };
   }, [setIntervalStatus]);
 
-  const temp = () => {
-    socket.emit("driver");
-  };
-
   return (
     <Wrapper>
-      <button type="button" onClick={temp}>
-        fdaf
-      </button>
       <DriverMap
         callList={callList}
         setSelectedCall={setSelectedCall}

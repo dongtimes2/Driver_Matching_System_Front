@@ -44,6 +44,12 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.(png|jpe?g|gif|webp)$/,
+        use: {
+          loader: "file-loader",
+        },
+      },
     ],
   },
   plugins: [

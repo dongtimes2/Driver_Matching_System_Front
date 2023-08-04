@@ -63,15 +63,8 @@ function PassengerService() {
     };
   }, []);
 
-  const temp = () => {
-    socket.emit("passenger");
-  };
-
   return (
     <Wrapper>
-      <button type="button" onClick={temp}>
-        fdaf
-      </button>
       <PassengerMap
         callStatus={callStatus}
         setPassengerCoordinate={setPassengerCoordinate}

@@ -11,7 +11,8 @@ export interface IGetAccount {
 }
 
 export interface IPatchAccount {
-  type: string;
+  name: string;
+  type: UserType;
 }
 
 export interface ICall {

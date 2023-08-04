@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { DEFAULT_LATITUDE, DEFAULT_LONGITUDE } from "../../constants/map";
 import { ICoordinate, PassengerCallStatusType } from "../../types/map";
+import passengerIcon1 from "../../assets/img/pointer1.png";
+import passengerIcon2 from "../../assets/img/pointer2.png";
+import driverIcon from "../../assets/img/driver.png";
 
 declare global {
   interface Window {
@@ -42,6 +45,7 @@ function PassengerMap({
   const mapScript = useRef<HTMLScriptElement | null>(null);
   const userMarker = useRef<any | null>(null);
   const driverMarker = useRef<any | null>(null);
+  const bounds = useRef<any | null>(null);
 
   useEffect(() => {
     mapScript.current = document.createElement("script");
@@ -101,39 +105,60 @@ function PassengerMap({
    * 지도의 중심에 마커가 생성되도록 하였음.
    */
 
+  // passenger 마커 구현부
   useEffect(() => {
     if (!map) return;
+    const imageSize = new window.kakao.maps.Size(48, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(24, 60) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      passengerIcon1,
+      imageSize,
+      imageOption
+    );
 
     // 유저 마커가 없을 경우 지도 중심에서 최초 생성
     if (!userMarker.current) {
       userMarker.current = new window.kakao.maps.Marker({
         position: map.getCenter(),
         map,
+        image: markerImage,
       });
     }
-
-    // let bounds = new window.kakao.maps.LatLngBounds();
 
     const handleMapClick = (mouseEvent: IMouseEvent) => {
       const latitude = mouseEvent.latLng.Ma;
       const longitude = mouseEvent.latLng.La;
       const position = new window.kakao.maps.LatLng(latitude, longitude);
-      // const bounds = new window.kakao.maps.LatLngBounds();
 
       setPassengerCoordinate({
         latitude,
         longitude,
       });
-
       userMarker.current.setPosition(position);
-      // map.setBounds(bounds);
     };
 
     if (callStatus === "notRequested") {
+      const markerImage = new window.kakao.maps.MarkerImage(
+        passengerIcon1,
+        imageSize,
+        imageOption
+      );
+
+      userMarker.current.setImage(markerImage);
+      bounds.current = null;
       window.kakao.maps.event.addListener(map, "click", handleMapClick);
+    } else if (callStatus === "requesting") {
+      const markerImage = new window.kakao.maps.MarkerImage(
+        passengerIcon2,
+        imageSize,
+        imageOption
+      );
+
+      userMarker.current.setImage(markerImage);
     } else {
-      // bounds.extend(position);
-      // map.setBounds(bounds);
+      const position = userMarker.current.getPosition();
+      bounds.current = new window.kakao.maps.LatLngBounds();
+      bounds.current.extend(position);
     }
 
     return () => {
@@ -147,9 +172,19 @@ function PassengerMap({
     const latitude = driverCoordinate.latitude;
     const longitude = driverCoordinate.longitude;
     const position = new window.kakao.maps.LatLng(latitude, longitude);
+    const imageSize = new window.kakao.maps.Size(48, 64);
+    const imageOption = { offset: new window.kakao.maps.Point(24, 60) };
+    const markerImage = new window.kakao.maps.MarkerImage(
+      driverIcon,
+      imageSize,
+      imageOption
+    );
 
     if (latitude === -1 || longitude === -1) {
-      if (driverMarker.current) driverMarker.current.setMap(null);
+      if (driverMarker.current) {
+        driverMarker.current.setMap(null);
+        driverMarker.current = null;
+      }
     } else {
       if (driverMarker.current) {
         driverMarker.current.setPosition(position);
@@ -158,7 +193,10 @@ function PassengerMap({
         driverMarker.current = new window.kakao.maps.Marker({
           position,
           map,
+          image: markerImage,
         });
+        bounds.current.extend(position);
+        map.setBounds(bounds.current);
       }
     }
   }, [driverCoordinate, map]);
