@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { postSignin } from "../auth";
-import { setAccessToken } from "../config/axios";
+import { setAccessToken, setRefreshToken } from "../config/axios";
 
 export const handleGoogleLogin = async () => {
   const provider = new GoogleAuthProvider();
@@ -20,8 +20,9 @@ export const handleGoogleLogin = async () => {
   }
 
   try {
-    const { accessToken } = await postSignin(idToken);
+    const { accessToken, refreshToken } = await postSignin(idToken);
     setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
   } catch (error) {
     console.error(error);
   }
