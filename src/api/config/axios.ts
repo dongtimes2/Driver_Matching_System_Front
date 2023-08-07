@@ -11,68 +11,40 @@ interface ICustomAxiosError<T = unknown, D = any> extends AxiosError {
   response?: ICustomAxiosResponse<T, D>;
 }
 
-const tokenController = new TokenController();
-
 export const BASE_URL = process.env.SERVER_URL;
 
-export const setAccessToken = (accessToken: string) => {
-  tokenController.setAccessToken(accessToken);
-};
-
-export const setRefreshToken = (refreshToken: string) => {
-  tokenController.setRefreshToken(refreshToken);
-};
+const tokenController = new TokenController();
 
 const handleAxiosError = async (error: ICustomAxiosError) => {
-  const { config, response } = error;
+  const { config: originalRequest, response } = error;
+
   if (
     response?.status === 401 &&
     response.data.message === "expired_access_token"
   ) {
     const {
-      data: { accessToken, refreshToken },
-    } = await refreshRequest.post<IPostRefreshToken>("/auth/refresh");
+      data: { accessToken },
+    } = await request<IPostRefreshToken>({
+      method: "post",
+      url: "/auth/refresh",
+    });
 
     tokenController.setAccessToken(accessToken);
-    tokenController.setRefreshToken(refreshToken);
 
-    const originalRequest = config!;
-    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
-    return axios(originalRequest);
+    if (originalRequest) {
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      return axios(originalRequest);
+    }
   } else {
     return Promise.reject(error);
   }
 };
 
-// refresh 요청 전용 로직
-export const refreshRequest = axios.create({ baseURL: BASE_URL });
-
-refreshRequest.interceptors.request.use((config) => {
-  const accessToken = tokenController.getAccessToken();
-  const refreshToken = tokenController.getRefreshToken();
-
-  config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : "";
-  config.headers.refresh = refreshToken ? `Bearer ${refreshToken}` : "";
-
-  return config;
-});
-
-refreshRequest.interceptors.response.use((res) => res, handleAxiosError);
-
-// 일반 요청 로직
-export const request = async <T>(
-  param: AxiosRequestConfig,
-  customHeader?: unknown
-) => {
-  const headers = customHeader
-    ? { ...param.headers, ...customHeader }
-    : param.headers;
-
+export const request = async <T>(param: AxiosRequestConfig) => {
   return axios({
     baseURL: BASE_URL,
     ...param,
-    headers,
+    withCredentials: true,
   }).then((res: AxiosResponse<T>) => res);
 };
 

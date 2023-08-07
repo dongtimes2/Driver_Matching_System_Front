@@ -1,26 +1,23 @@
-import { IPostRefreshToken, IPostSignin } from "../../types/api";
-import { refreshRequest, request } from "../config/axios";
+import { IPostSignin } from "../../types/api";
+import { request } from "../config/axios";
 
 export const postSignin = async (idToken: string) => {
-  const res = await request<IPostSignin>(
-    {
-      method: "post",
-      url: "/auth/signin",
-    },
-    {
+  const res = await request<IPostSignin>({
+    method: "post",
+    url: "/auth/signin",
+    headers: {
       Authentication: `Bearer ${idToken}`,
-    }
-  );
+    },
+  });
 
   return res.data;
 };
 
-export const postRefreshToken = async () => {
-  const res = await refreshRequest
-    .post<IPostRefreshToken>("/auth/refresh")
-    .catch((error) => {
-      throw new Error(error);
-    });
+export const postSignout = async () => {
+  const res = await request({
+    method: "post",
+    url: "/auth/signout",
+  });
 
   return res.data;
 };
