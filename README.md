@@ -45,6 +45,8 @@ drinder
 4. 로그아웃  
    상단 헤더 우측의 로그아웃 아이콘을 클릭하면 로그아웃 됩니다.
 
+   <img width="271" alt="승객" src="https://github.com/dongtimes2/Driver_Matching_System_Front/assets/98700888/c8bf54b8-8beb-45e0-99ad-244f3e65db76">
+
 # 사용한 기술
 
 ## Frontend
