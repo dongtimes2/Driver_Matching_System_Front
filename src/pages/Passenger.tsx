@@ -10,7 +10,7 @@ function Passenger() {
   return (
     <Layout>
       <Header userName={name} showRightArea />
-      <PassengerService />
+      <PassengerService userName={name} />
     </Layout>
   );
 }

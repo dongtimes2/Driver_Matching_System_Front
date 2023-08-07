@@ -10,7 +10,7 @@ function Driver() {
   return (
     <Layout>
       <Header userName={name} showRightArea />
-      <DriverService />
+      <DriverService userName={name} />
     </Layout>
   );
 }
