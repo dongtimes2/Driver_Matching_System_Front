@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Label from "../atoms/Label";
 import BottomFixedButton from "../molecule/BottomFixedButton";
-import { handleGoogleLogin } from "../../api/firebase/auth";
 import { getAccount } from "../../api/accounts";
+import useAuth from "../../hooks/useAuth";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,19 +16,16 @@ const Wrapper = styled.div`
 
 function MainTitle() {
   const navigate = useNavigate();
+  const { signin } = useAuth();
 
   const handleSigninButtonClick = async () => {
-    try {
-      await handleGoogleLogin();
-      const { type, name } = await getAccount();
+    await signin();
+    const { type, name } = await getAccount();
 
-      if (type) {
-        navigate(`/map/${type}`, { state: { name } });
-      } else {
-        navigate("/signup", { state: { name } });
-      }
-    } catch (error) {
-      console.error(error);
+    if (type) {
+      navigate(`/map/${type}`, { state: { name } });
+    } else {
+      navigate("/signup", { state: { name } });
     }
   };
 

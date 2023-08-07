@@ -19,11 +19,15 @@ import {
 import { getDriverButtonText } from "../../utils/buttonText";
 import useInterval from "../../hooks/useInterval";
 
+interface Props {
+  userName: string;
+}
+
 const Wrapper = styled.div`
   height: 100%;
 `;
 
-function DriverService() {
+function DriverService({ userName }: Props) {
   const coordinate = useRef<ICoordinate>({
     latitude: DEFAULT_LATITUDE,
     longitude: DEFAULT_LONGITUDE,
@@ -72,7 +76,7 @@ function DriverService() {
   }, [selectedCall]);
 
   useEffect(() => {
-    sendConnectSocket({ name: "test1", type: "driver" });
+    sendConnectSocket({ name: userName, type: "driver" });
 
     socket.on("responseCallList", (data: ICall[]) => {
       setCallList(data);
@@ -92,7 +96,7 @@ function DriverService() {
     return () => {
       socket.removeAllListeners();
     };
-  }, [setIntervalStatus]);
+  }, [setIntervalStatus, userName]);
 
   return (
     <Wrapper>

@@ -9,8 +9,8 @@ interface Props {
 const Button = styled.button`
   width: 2.5rem;
   height: 2.5rem;
-  border: 2.5px solid ${({ theme }) => theme.colors.grayLight};
-  border-radius: 50%;
+  padding: 0;
+  border: none;
   color: ${({ theme }) => theme.colors.grayDark};
   background-color: ${({ theme }) => theme.colors.white};
   font-size: ${({ theme }) => theme.fontSize.lg};

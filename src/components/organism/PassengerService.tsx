@@ -12,11 +12,15 @@ import {
   sendDisconnectMatching,
 } from "../../api/map";
 
+interface Props {
+  userName: string;
+}
+
 const Wrapper = styled.div`
   height: 100%;
 `;
 
-function PassengerService() {
+function PassengerService({ userName }: Props) {
   const [callStatus, setCallStatus] =
     useState<PassengerCallStatusType>("notRequested");
   const [callId, setCallId] = useState<string | null>(null);
@@ -45,7 +49,7 @@ function PassengerService() {
   };
 
   useEffect(() => {
-    sendConnectSocket({ name: "test2", type: "passenger" });
+    sendConnectSocket({ name: userName, type: "passenger" });
 
     socket.on("responseCallId", (id: string) => {
       setCallId(id);
@@ -61,7 +65,7 @@ function PassengerService() {
     return () => {
       socket.removeAllListeners();
     };
-  }, []);
+  }, [userName]);
 
   return (
     <Wrapper>

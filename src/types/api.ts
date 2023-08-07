@@ -5,6 +5,10 @@ export interface IPostSignin {
   accessToken: string;
 }
 
+export interface IPostRefreshToken {
+  accessToken: string;
+}
+
 export interface IGetAccount {
   name: string;
   type: UserType;

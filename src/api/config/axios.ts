@@ -1,39 +1,59 @@
+/* eslint-disable */
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { TokenController } from "../../utils/tokenController";
+import { IPostRefreshToken } from "../../types/api";
+
+interface ICustomAxiosResponse<T = any, D = any> extends AxiosResponse {
+  data: { message: string };
+}
+
+interface ICustomAxiosError<T = unknown, D = any> extends AxiosError {
+  response?: ICustomAxiosResponse<T, D>;
+}
 
 export const BASE_URL = process.env.SERVER_URL;
-let accessToken: string | null = null;
 
-export const setAccessToken = (token: string) => {
-  accessToken = token;
-};
+const tokenController = new TokenController();
 
-const handleAxiosError = (error: AxiosError) => {
-  if (error.response?.status === 401) {
+const handleAxiosError = async (error: ICustomAxiosError) => {
+  const { config: originalRequest, response } = error;
+
+  if (
+    response?.status === 401 &&
+    response.data.message === "expired_access_token"
+  ) {
+    const {
+      data: { accessToken },
+    } = await request<IPostRefreshToken>({
+      method: "post",
+      url: "/auth/refresh",
+    });
+
+    tokenController.setAccessToken(accessToken);
+
+    if (originalRequest) {
+      originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      return axios(originalRequest);
+    }
+  } else {
     return Promise.reject(error);
   }
-  return Promise.reject(error);
+};
+
+export const request = async <T>(param: AxiosRequestConfig) => {
+  return axios({
+    baseURL: BASE_URL,
+    ...param,
+    withCredentials: true,
+  }).then((res: AxiosResponse<T>) => res);
 };
 
 axios.interceptors.request.use((config) => {
-  // eslint-disable-next-line
+  const accessToken = tokenController.getAccessToken();
+
   config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : "";
 
   return config;
 });
 
 axios.interceptors.response.use((res) => res, handleAxiosError);
-
-export const request = async <T>(
-  param: AxiosRequestConfig,
-  customHeader?: unknown
-) => {
-  const headers = customHeader
-    ? { ...param.headers, ...customHeader }
-    : param.headers;
-
-  return axios({
-    baseURL: BASE_URL,
-    ...param,
-    headers,
-  }).then((res: AxiosResponse<T>) => res);
-};
