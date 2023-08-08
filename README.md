@@ -57,14 +57,16 @@ drinder
 - socket.io-client
 - firebase
 - webpack 직접 설정 (cra 사용하지 않음)
+- recoil
 
 ## Backend
 
 - typescript
 - express
 - mongodb
-- jwt
+- jwt (access token, refresh token을 이용한 로그인 로직 채택)
 - firebase-admin
+- socket.io
 
 # 환경변수
 
