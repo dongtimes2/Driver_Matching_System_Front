@@ -9,22 +9,22 @@ export class TokenController {
   }
 
   getAccessToken() {
-    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    return sessionStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
 
   getTokenExpiryTime() {
-    return localStorage.getItem(this.TOKEN_EXPIRY_TIME_KEY);
+    return sessionStorage.getItem(this.TOKEN_EXPIRY_TIME_KEY);
   }
 
   setAccessToken(accessToken: string) {
-    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
+    sessionStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
   }
 
   setTokenExpiryTime() {
     const oneHourLater = new Date()
       .setHours(new Date().getHours() + 1)
       .toString();
-    localStorage.setItem(this.TOKEN_EXPIRY_TIME_KEY, oneHourLater);
+    sessionStorage.setItem(this.TOKEN_EXPIRY_TIME_KEY, oneHourLater);
   }
 
   isTokenExpired() {
@@ -33,7 +33,7 @@ export class TokenController {
   }
 
   clear() {
-    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
-    localStorage.removeItem(this.TOKEN_EXPIRY_TIME_KEY);
+    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_EXPIRY_TIME_KEY);
   }
 }

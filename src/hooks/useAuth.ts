@@ -33,10 +33,20 @@ const useAuth = () => {
   };
 
   const signout = async () => {
-    await postSignout();
-    await signOut(auth);
-    tokenController.clear();
+    try {
+      await postSignout();
+    } catch (error) {
+      console.error(error);
+    }
+
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+
     setIsSignedin(false);
+    tokenController.clear();
   };
 
   return { isSignedin, signin, signout };
