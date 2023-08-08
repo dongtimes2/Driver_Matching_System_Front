@@ -18,6 +18,7 @@ const useAuth = () => {
       idToken = await result.user.getIdToken();
     } catch (error) {
       console.error(error);
+      throw new Error();
     }
 
     try {
@@ -26,6 +27,7 @@ const useAuth = () => {
       tokenController.setTokenExpiryTime();
     } catch (error) {
       console.error(error);
+      throw new Error();
     }
     setIsSignedin(true);
   };
