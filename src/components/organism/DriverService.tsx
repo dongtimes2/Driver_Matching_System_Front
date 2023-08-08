@@ -5,6 +5,7 @@ import BottomFixedButton from "../molecule/BottomFixedButton";
 import {
   sendAcceptCall,
   sendConnectSocket,
+  sendDisconnectSocket,
   sendDriverCallback,
   sendDriverCoordinate,
   socket,
@@ -94,6 +95,7 @@ function DriverService({ userName }: Props) {
     });
 
     return () => {
+      sendDisconnectSocket("driver");
       socket.removeAllListeners();
     };
   }, [setIntervalStatus, userName]);

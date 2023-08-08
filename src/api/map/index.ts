@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import { ICoordinate } from "../../types/map";
-import { IUser } from "../../types/accounts";
+import { IUser, UserType } from "../../types/accounts";
 import { ICall } from "../../types/api";
 
 const SERVER_URL = process.env.SERVER_URL as string;
@@ -10,6 +10,10 @@ export const socket = io(SERVER_URL);
 
 export const sendConnectSocket = ({ name, type }: IUser) => {
   socket.emit("sendConnectSocket", { name, type });
+};
+
+export const sendDisconnectSocket = (type: UserType) => {
+  socket.emit("sendDisconnectSocket", type);
 };
 
 // paassenger
