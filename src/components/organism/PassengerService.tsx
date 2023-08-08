@@ -10,6 +10,7 @@ import {
   socket,
   sendPassengerCallback,
   sendDisconnectMatching,
+  sendDisconnectSocket,
 } from "../../api/map";
 
 interface Props {
@@ -61,8 +62,13 @@ function PassengerService({ userName }: Props) {
     socket.on("responseDriverCoordinate", (coordinate: ICoordinate) => {
       setDriverCoordinate(coordinate);
     });
+    socket.on("responseDisconnectMatching", () => {
+      setCallStatus("notRequested");
+      setDriverCoordinate({ latitude: -1, longitude: -1 });
+    });
 
     return () => {
+      sendDisconnectSocket("passenger");
       socket.removeAllListeners();
     };
   }, [userName]);
